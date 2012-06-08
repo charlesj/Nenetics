@@ -28,6 +28,7 @@ namespace Nenetics
             NumberOfGenerations = numGenerations;
             PromiscuityIndex = promiscuityIndex;
             ChanceForMutation = chanceForMutation;
+            InitialPopulation = initialPopulation;
         }
 
         public void Process()
@@ -36,37 +37,37 @@ namespace Nenetics
             var currentGeneration = InitialPopulation;
             for (int i = 0; i < NumberOfGenerations; i++)
             {
-                foreach (var genotype in currentGeneration.Genotypes)
-                {
-                    var fitness = _fitnessTest(genotype);
-                    if (fitness > MinimumFitness)
-                    {
-                        fitForBreeding.Add(genotype);
-                    }
-                }
-
+                var start = DateTime.Now;
+                fitForBreeding = currentGeneration.Genotypes.OrderByDescending(g => _fitnessTest(g)).Take(InitialPopulation.Genotypes.Count).ToList();
                 // We have the genotypes fit for breeding
                 // now find good couples
                 var couples = new List<Couple>();
-                foreach (var genotype in fitForBreeding)
+                for (int j = 0; j < fitForBreeding.Count; j++)
                 {
+                    var genotype = fitForBreeding[j];
                     Genotype genotype1 = genotype;
-                    var everyOneElse = fitForBreeding.Where(g => g != genotype1);
-                    foreach (var other in everyOneElse)
+
+                    for (int k = j + 1; k < fitForBreeding.Count;k++ )
                     {
-                        if (genotype.SimilarTo(other) > .9)
+                        var other = fitForBreeding[k];
+                        if (genotype.SimilarTo(other) >= MinimumFitness)
                         {
                             if (couples.Count(c => c.Mother == genotype || c.Father == genotype) < PromiscuityIndex)
                             {
-                                couples.Add(new Couple {Mother = genotype, Father = other});
+                                couples.Add(new Couple { Mother = genotype, Father = other });
                             }
                         }
                     }
                 }
                 //we have the couples, now breed them
-                currentGeneration.CouplesToBreed = couples;
+                var newCouples = couples.OrderByDescending(c => _fitnessTest(c.Mother)).Take(InitialPopulation.Genotypes.Count).ToList();
+                currentGeneration.CouplesToBreed = newCouples;
                 var nextGeneration = currentGeneration.GetNextGeneration();
                 Generations.Add(nextGeneration);
+                var latestfitness = _fitnessTest(currentGeneration.GetBestMatch(_fitnessTest));
+                var end = DateTime.Now;
+                var diff = end - start;
+                Console.WriteLine("Generation {0}: {1} best fitness", i, latestfitness);
                 currentGeneration = nextGeneration;
             }
         }
