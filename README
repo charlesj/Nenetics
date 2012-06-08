@@ -1,0 +1,1 @@
+Nenetics is a C# library for working with evolution.  It implements a simple genetic algorithm and can push through arbitary generations with many different settings.
