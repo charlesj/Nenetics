@@ -13,13 +13,12 @@ namespace Nenetics
         /// The couple to breed
         /// </summary>
         public Couple Couple { get; set; }
-        
+
         /// <summary>
         /// Breeder takes two genotypes and breeds them, producing an offspring created from their genes.
         /// </summary>
         /// <param name="chanceOfMutation">The chance a mutation occurs.  Precise up to 3 decimal places</param>
-        /// <param name="mother">The mother</param>
-        /// <param name="father">The father</param>
+        /// <param name="couple">The couple to breed </param>
         public Breeder(double chanceOfMutation, Couple couple)
         {
             Couple = couple;
@@ -43,7 +42,7 @@ namespace Nenetics
             {
                 var mutate = ShouldMutate();
                 // Handle different genotype lengths
-                if (i < Couple.Father.Genes.Count && Couple.Father.Genes[i] != null && (Couple.Father.Genes[i] != Couple.Mother.Genes[i] || mutate))
+                if (i < Couple.Father.Genes.Count && (Couple.Father.Genes[i] != Couple.Mother.Genes[i] || mutate))
                 {
                     if(mutate)
                     {
@@ -53,19 +52,19 @@ namespace Nenetics
                     {
                         // Randomly take mother or father
                         genotype.Genes.Add(RandomNumberSource.GetNext(1) == 1
-                                               ? new Gene (Couple.Mother.Genes[i].Value )
-                                               : new Gene ( Couple.Father.Genes[i].Value ));
+                                               ? Couple.Mother.Genes[i] 
+                                               : Couple.Father.Genes[i] );
                     }
                 }
                 else if (i < Couple.Father.Genes.Count)
                 {
                     //mothers genes are longer
-                    genotype.Genes.Add(new Gene (Couple.Mother.Genes[i].Value ));
+                    genotype.Genes.Add(Couple.Mother.Genes[i] );
                 }
                 else
                 {
                     //they are equal
-                    genotype.Genes.Add(new Gene(Couple.Mother.Genes[i].Value ));
+                    genotype.Genes.Add(Couple.Mother.Genes[i]);
                 }
             }
 
@@ -79,7 +78,7 @@ namespace Nenetics
                     }
                     else
                     {
-                        genotype.Genes.Add(new Gene (Couple.Father.Genes[i].Value ));
+                        genotype.Genes.Add(Couple.Father.Genes[i]);
                     }
                 }
             }
@@ -88,14 +87,10 @@ namespace Nenetics
 
         private bool ShouldMutate()
         {
-            double chance = Math.Round(ChanceOfMutation, 3);
-            int intChance = Convert.ToInt32(chance * 1000);
-            int value = RandomNumberSource.GetNext(100000);
-            if (value < intChance)
-            {
-                return true;
-            }
-            return false;
+            var chance = Math.Round(ChanceOfMutation, 3);
+            var intChance = Convert.ToInt32(chance * 1000);
+            var value = RandomNumberSource.GetNext(100000);
+            return value < intChance;
         }
 
         private void Mutate(Genotype genotype)
@@ -115,7 +110,7 @@ namespace Nenetics
 
         private void AddRandomGene(Genotype genotype)
         {
-            genotype.Genes.Add(Gene.GetRandomGene());
+            genotype.Genes.Add(Genotype.RandomBool());
         }
     }
 }

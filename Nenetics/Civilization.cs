@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Nenetics
 {
-    public class Civilization
+    public class ArtificialSelectionCivilization
     {
         public Generation InitialPopulation;
         public List<Generation> Generations { get; private set; }
@@ -14,7 +14,7 @@ namespace Nenetics
         public int PromiscuityIndex { get; private set; }
         public double ChanceForMutation { get; private set; }
         
-        public Civilization(
+        public ArtificialSelectionCivilization(
             Generation initialPopulation, 
             Func<Genotype, double> fitnessTest, 
             double minimumFitness, 
