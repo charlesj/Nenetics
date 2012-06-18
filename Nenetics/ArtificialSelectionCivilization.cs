@@ -33,19 +33,14 @@ namespace Nenetics
 
         public void Process()
         {
-            var fitForBreeding = new List<Genotype>();
             var currentGeneration = InitialPopulation;
             for (int i = 0; i < NumberOfGenerations; i++)
             {
-                var start = DateTime.Now;
-                fitForBreeding = currentGeneration.Genotypes.OrderByDescending(g => _fitnessTest(g)).Take(InitialPopulation.Genotypes.Count).ToList();
-                // We have the genotypes fit for breeding
-                // now find good couples
+                List<Genotype> fitForBreeding = currentGeneration.Genotypes.OrderByDescending(g => _fitnessTest(g)).Take(InitialPopulation.Genotypes.Count).ToList();
                 var couples = new List<Couple>();
                 for (int j = 0; j < fitForBreeding.Count; j++)
                 {
                     var genotype = fitForBreeding[j];
-                    Genotype genotype1 = genotype;
 
                     for (int k = j + 1; k < fitForBreeding.Count;k++ )
                     {
@@ -64,10 +59,7 @@ namespace Nenetics
                 currentGeneration.CouplesToBreed = newCouples;
                 var nextGeneration = currentGeneration.GetNextGeneration();
                 Generations.Add(nextGeneration);
-                var latestfitness = _fitnessTest(currentGeneration.GetBestMatch(_fitnessTest));
-                var end = DateTime.Now;
-                var diff = end - start;
-                Console.WriteLine("Generation {0}: {1} best fitness", i, latestfitness);
+                Console.WriteLine("Generation {0} - Best match: {1}", i, _fitnessTest(currentGeneration.GetBestMatch(_fitnessTest)));
                 currentGeneration = nextGeneration;
             }
         }

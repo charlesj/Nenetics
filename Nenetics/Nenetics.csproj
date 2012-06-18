@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Breeder.cs" />
-    <Compile Include="Civilization.cs" />
+    <Compile Include="ArtificialSelectionCivilization.cs" />
     <Compile Include="Couple.cs" />
     <Compile Include="Gene.cs" />
     <Compile Include="Genotype.cs" />
