@@ -1,52 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Genotype.cs" company="Josh Charles">
+//   This software is released under a license yet to be determined but of the open source variety
+// </copyright>
+// <summary>
+//   Contains a list of genes
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Nenetics
 {
-    /// <summary>
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+
+	/// <summary>
     /// Contains a list of genes
     /// </summary>
     public class Genotype
     {
-        //public List<Gene> Genes { get; set; }
-        public List<bool> Genes { get; set; }
-
-        public Genotype()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Genotype"/> class.
+		/// </summary>
+		public Genotype()
         {
-            Genes = new List<bool>();
+			this.Genes = new List<Gene>();
         }
 
-        public double SimilarTo(Genotype toTest)
+		/// <summary>
+		/// Gets or sets the genes.
+		/// </summary>
+		public List<Gene> Genes { get; set; }
+
+		/// <summary>
+		/// Constructs a genotype of the requested size.  
+		/// </summary>
+		/// <param name="size">The length of the genome to construct</param>
+		/// <returns>The constructed Genotype</returns>
+		public static Genotype GetRandomGenotype(int size)
+		{
+			var genotype = new Genotype();
+			for (var j = 0; j < size; j++)
+			{
+				genotype.Genes.Add(Gene.GetRandomGene());
+			}
+
+			return genotype;
+		}
+
+		/// <summary>
+		/// Will compare two instances of genotypes with one another.  The comparison is gene by gene. 
+		/// </summary>
+		/// <remarks>
+		/// One consequence of how this method is currently implemented is that if there is a random mutation that is a deletion, it will be 'off by one'.  In this case, a couple could have a radically different child.  
+		/// This may or may not be a good thing, but it's certainly something to keep in mind.
+		/// </remarks>
+		/// <param name="comparison">The genotype to compare with.</param>
+		/// <returns>The percentage of similarity.</returns>
+        public double SimilarTo(Genotype comparison)
         {
-            int count = 0;
-            for(int i = 0; i<Genes.Count;i++)
-            {
-                if (i < toTest.Genes.Count && toTest.Genes[i] == Genes[i]) count++;
-            }
-            return (double)count / Math.Max(Genes.Count,toTest.Genes.Count);
+            int count = this.Genes.Where((t, i) => i < comparison.Genes.Count && comparison.Genes[i] == t).Count();
+	        return (double)count / Math.Max(this.Genes.Count, comparison.Genes.Count);
         }
 
-        public static Genotype GetRandomGenotype(int size)
-        {
-            var genotype = new Genotype();
-            for (int j = 0; j < size; j++)
-            {
-                genotype.Genes.Add(RandomBool());
-            }
-            return genotype;
-        }
-
-        public static bool RandomBool()
-        {
-            return RandomNumberSource.GetNext(1) == 1;
-        }
-
+		/// <summary>
+		/// Returns a string representation of this genotype
+		/// </summary>
+		/// <returns>A string representation of this genotype</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            foreach (var gene in Genes)
-                sb.Append(gene ? "1" : "0");
+            foreach (var gene in this.Genes)
+            {
+	            sb.Append(gene);
+            }
+
             return sb.ToString();
         }
     }

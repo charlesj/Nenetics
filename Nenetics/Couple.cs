@@ -1,8 +1,27 @@
-﻿namespace Nenetics
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Couple.cs" company="Josh Charles">
+//   This software is released under a license yet to be determined but of the open source variety
+// </copyright>
+// <summary>
+//   Defines the Couple type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Nenetics
 {
-    public class Couple
+	/// <summary>
+	/// The couple.
+	/// </summary>
+	public class Couple
     {
-        public Genotype Mother { get; set; }
-        public Genotype Father { get; set; }
+		/// <summary>
+		/// Gets or sets the mother.
+		/// </summary>
+		public Genotype Mother { get; set; }
+
+		/// <summary>
+		/// Gets or sets the father.
+		/// </summary>
+		public Genotype Father { get; set; }
     }
 }

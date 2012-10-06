@@ -23,7 +23,7 @@ namespace Nenetics.Examples
                 var x = i - (y * 40);
                 if(i < Genotype.Genes.Count )
                 {
-                    bmp.SetPixel(x, y, Genotype.Genes[i] ? white : black);
+                    bmp.SetPixel(x, y, Genotype.Genes[i].Value ? white : black);
                 }
                 else
                 {
@@ -41,7 +41,7 @@ namespace Nenetics.Examples
                 for (int j = 0; j < 40; j++)
                 {
                     var color = phenotype.GetPixel(j, i);
-                    rtn.Genes.Add(color.Name.Contains("ffffff"));
+                    rtn.Genes.Add(new Gene(color.Name.Contains("ffffff")));
                 }
             }
             return rtn;
