@@ -3,14 +3,14 @@
 //   This software is released under a license yet to be determined but of the open source variety
 // </copyright>
 // <summary>
-//   The phenotype.
+//   Defines the phenotype base type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace Nenetics
 {
 	/// <summary>
-	/// The phenotype.
+	/// The abstract phenotype. Used for converting a genotype into another type.
 	/// </summary>
 	/// <typeparam name="T">
 	/// The type this phenotype represents
@@ -25,7 +25,7 @@ namespace Nenetics
 		/// </param>
 		protected Phenotype(Genotype genotype)
         {
-            Genotype = genotype;
+            this.Genotype = genotype;
         }
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Nenetics
 		public Genotype Genotype { get; private set; }
 
 		/// <summary>
-		/// The get.
+		/// Gets the actual implementation object for this phenotype.
 		/// </summary>
 		/// <returns>
 		/// The <see cref="T"/>.
@@ -53,10 +53,10 @@ namespace Nenetics
 		public abstract T Get();
 
 		/// <summary>
-		/// The create genotype.
+		/// Creates a genotype from the given phenotype.  Must be implemented on the client.
 		/// </summary>
 		/// <param name="phenotype">
-		/// The phenotype.
+		/// The phenotype to get the genotype of.
 		/// </param>
 		/// <returns>
 		/// The <see cref="Genotype"/>.

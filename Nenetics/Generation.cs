@@ -100,21 +100,7 @@ namespace Nenetics
 		/// </returns>
 		public Genotype GetBestMatch(Func<Genotype, double> fitnessTest)
         {
-            Genotype currBest = this.Genotypes[0]; 
-            
-			double bestMatch = 0.0;
-            
-			foreach (var genotype in this.Genotypes)
-            {
-                var fitness = fitnessTest(genotype);
-                if (fitness > bestMatch)
-                {
-	                currBest = genotype;
-	                bestMatch = fitness;
-                }
-            }
-
-            return currBest;
+			return this.Genotypes.OrderByDescending(fitnessTest).FirstOrDefault();
         }
     }
 }

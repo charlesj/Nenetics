@@ -33,7 +33,7 @@ namespace Nenetics
 		public List<Gene> Genes { get; set; }
 
 		/// <summary>
-		/// Constructs a genotype of the requested size.  
+		/// Constructs a random genotype of the requested size.  
 		/// </summary>
 		/// <param name="size">The length of the genome to construct</param>
 		/// <returns>The constructed Genotype</returns>

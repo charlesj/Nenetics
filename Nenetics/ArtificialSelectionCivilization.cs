@@ -92,20 +92,23 @@ namespace Nenetics
 		public double ChanceForMutation { get; private set; }
 
 		/// <summary>
-		/// The process.
+		/// Processes the entire civilization.
 		/// </summary>
+		/// <remarks>
+		/// This could be a long running and memory intensive process.  Don't be surprised if it runs out of memory if you have given it very large values to generate.
+		/// </remarks>
 		public void Process()
         {
             var currentGeneration = this.InitialPopulation;
             for (int i = 0; i < this.NumberOfGenerations; i++)
             {
-                List<Genotype> fitForBreeding = currentGeneration.Genotypes.OrderByDescending(g => this.fitnessTest(g)).Take(this.InitialPopulation.Genotypes.Count).ToList();
+                var fitForBreeding = currentGeneration.Genotypes.OrderByDescending(g => this.fitnessTest(g)).Take(this.InitialPopulation.Genotypes.Count).ToList();
                 var couples = new List<Couple>();
-                for (int j = 0; j < fitForBreeding.Count; j++)
+                for (var j = 0; j < fitForBreeding.Count; j++)
                 {
                     var genotype = fitForBreeding[j];
 
-                    for (int k = j + 1; k < fitForBreeding.Count; k++)
+                    for (var k = j + 1; k < fitForBreeding.Count; k++)
                     {
                         var other = fitForBreeding[k];
                         if (genotype.SimilarTo(other) >= this.MinimumFitness)
@@ -118,7 +121,7 @@ namespace Nenetics
                     }
                 }
 
-                // we have the couples, now breed them
+                // we have the couples, now breed them, limiting them to the same size population they started with.
                 var newCouples = couples.OrderByDescending(c => this.fitnessTest(c.Mother)).Take(this.InitialPopulation.Genotypes.Count).ToList();
                 currentGeneration.CouplesToBreed = newCouples;
                 var nextGeneration = currentGeneration.GetNextGeneration();
