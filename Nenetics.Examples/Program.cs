@@ -11,7 +11,7 @@ namespace Nenetics.Examples
         {
             const double    chanceToMutate      = .003;
             const int       populationSize      = 100;
-            const int       generationsToRun    = 350;
+            const int       generationsToRun    = 50;
             const double    minimumFitness      = 0.4;
             const int       promiscuityIndex    = 3;
             const int       genomeSize          = 1600;
@@ -24,7 +24,7 @@ namespace Nenetics.Examples
             var target = pic.Genotype;
             var result = pic.Get();
 
-            Func<Genotype, double> fitnessTest = g => g.SimilarTo(target);
+            Func<Genotype, double> fitnessTest = (g) => g.SimilarTo(target);
 
             var population = Generation.CreateRandomPopulation(populationSize, genomeSize, chanceToMutate);
             result.Save(Path.Combine(currentFolder, "target.png"), ImageFormat.Png);
