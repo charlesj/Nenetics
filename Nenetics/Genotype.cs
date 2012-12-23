@@ -59,7 +59,9 @@ namespace Nenetics
 		/// <returns>The percentage of similarity.</returns>
         public double SimilarTo(Genotype comparison)
         {
-            int count = this.Genes.Where((t, i) => i < comparison.Genes.Count && comparison.Genes[i].Value == t.Value).Count();
+			// get the number of genes that are exactly equal in value.
+			int count = this.Genes.Where((target, iterator) => iterator < comparison.Genes.Count && comparison.Genes[iterator].Value == target.Value).Count();
+			// return the number of genes that are equal divided by the total number.
 	        return (double)count / Math.Max(this.Genes.Count, comparison.Genes.Count);
         }
 

@@ -99,26 +99,34 @@ namespace Nenetics
 		/// </remarks>
 		public void Process()
         {
+			// Prime the currentGeneration variable.
             var currentGeneration = this.InitialPopulation;
+			
+			// We need to process each generation for the total number of generations.
             for (int i = 0; i < this.NumberOfGenerations; i++)
             {
+				// This line is pretty dense.  We are ordering all the genotypes by their fitness.  The most fit will be at the top.
+				// Then we take the top number that matches the current population size.  This is important, because otherwise the population
+				// size will grow exponentially.  Finally, ToList() is called so that we can call count() on it in a few lines.
                 var fitForBreeding = currentGeneration.Genotypes.OrderByDescending(g => this.fitnessTest(g)).Take(this.InitialPopulation.Genotypes.Count).ToList();
                 var couples = new List<Couple>();
-                for (var j = 0; j < fitForBreeding.Count; j++)
+				
+				// This is where we breed.  We start with what we call the 'mothers' but that is just a useful label.
+                for (var motherIterator = 0; motherIterator < fitForBreeding.Count; motherIterator++)
                 {
-                    var genotype = fitForBreeding[j];
+                    var mother = fitForBreeding[motherIterator];
 
-                    for (var k = j + 1; k < fitForBreeding.Count; k++)
-                    {
-                        var other = fitForBreeding[k];
-                        if (genotype.SimilarTo(other) >= this.MinimumFitness)
-                        {
-                            if (couples.Count(c => c.Mother == genotype || c.Father == genotype) < this.PromiscuityIndex)
-                            {
-                                couples.Add(new Couple { Mother = genotype, Father = other });
-                            }
-                        }
-                    }
+					// We need to match the mother with each possible father.
+	                var eligibleFathers =
+										// start by getting the rest of the array
+						fitForBreeding	.Skip(motherIterator + 1)
+										// order the eligible fathers by their similarity to the mother.
+										.OrderByDescending(mother.SimilarTo)
+										// Take the maximum number of fathers
+										.Take(this.PromiscuityIndex);
+
+					// Add the mother and her matches to the couples.
+					couples.AddRange(eligibleFathers.Select( father => new Couple{Mother = mother, Father = father}));
                 }
 
                 // we have the couples, now breed them, limiting them to the same size population they started with.
